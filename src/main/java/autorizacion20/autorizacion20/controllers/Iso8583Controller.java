@@ -36,7 +36,7 @@ public class Iso8583Controller {
     private byte[] lastIsoMessage; // Variable para guardar el último mensaje ISO recibido
 
    @PostMapping("/api/iso8583/receive")
-    public ResponseEntity<String> receiveIsoMessage(@RequestBody byte[] isoMessageBytes) {
+    public ResponseEntity<byte[]> receiveIsoMessage(@RequestBody byte[] isoMessageBytes) {
         logger.info("Received ISO message bytes: {}", new String(isoMessageBytes));
 
         // Parse and process the ISO message
@@ -59,8 +59,7 @@ public class Iso8583Controller {
         this.jsonAEmisorMessage = jsonAEmisor;
 
         // Return a simple confirmation response (if needed)
-        String response = "ISO message processed successfully";
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(isoMessageBytes);
     }
 
     // Método para reconstruir el mensaje ISO con los datos actualizados
