@@ -4,8 +4,10 @@
  */
 package autorizacion20.autorizacion20.clases;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -14,6 +16,7 @@ import java.util.TreeMap;
  * @author XPC
  */
 public class MensajeIso8583 {
+
     private String mti;
     private BitSet bitMap = new BitSet(64);
     private Map<Integer, String> datos = new HashMap<>();
@@ -25,11 +28,10 @@ public class MensajeIso8583 {
     public void setMti(String mti) {
         this.mti = mti;
     }
-    
+
     /*public void setCampo(int numeroCampo, String valor) {
         datos.put(numeroCampo, valor);
     }*/
-
     public BitSet getBitMap() {
         return bitMap;
     }
@@ -48,17 +50,29 @@ public class MensajeIso8583 {
 
     public void establecerBitsEnBitMap() {
         for (Integer campo : datos.keySet()) {
-            bitMap.set(campo - 1);
+            bitMap.set(campo - 1, true);
         }
     }
 
     public String obtenerBitMapHex() {
-        byte[] bytes = bitMap.toByteArray();
+        byte[] bytes = bitSetToByteArray(bitMap);
+
         StringBuilder hex = new StringBuilder(bytes.length * 2);
         for (byte b : bytes) {
             hex.append(String.format("%02X", b));
         }
+
         return hex.toString();
+    }
+
+    private byte[] bitSetToByteArray(BitSet bitSet) {
+        byte[] bytes = new byte[(bitSet.length() + 7) / 8];
+        for (int i = 0; i < bitSet.length(); i++) {
+            if (bitSet.get(i)) {
+                bytes[i / 8] |= (1 << (7 - (i % 8)));
+            }
+        }
+        return bytes;
     }
 
     public String mensaje() {
@@ -75,14 +89,22 @@ public class MensajeIso8583 {
 
     public byte[] mensajeBytes() {
         establecerBitsEnBitMap();
-        byte[] mtiBytes = mti.getBytes(java.nio.charset.StandardCharsets.US_ASCII);
+
         byte[] bitMapBytes = mensajeBytes(obtenerBitMapHex());
         TreeMap<Integer, String> ordenCampos = new TreeMap<>(datos);
 
-        byte[] result = new byte[mtiBytes.length + bitMapBytes.length + ordenCampos.values().stream().mapToInt(String::length).sum()];
+        // Calcular el tamaño total del resultado
+        int totalLength = mti.length() + bitMapBytes.length + ordenCampos.values().stream().mapToInt(String::length).sum();
+        byte[] result = new byte[totalLength];
+
+        // Copiar mtiBytes al resultado
+        byte[] mtiBytes = mti.getBytes(java.nio.charset.StandardCharsets.US_ASCII);
         System.arraycopy(mtiBytes, 0, result, 0, mtiBytes.length);
+
+        // Copiar bitMapBytes al resultado
         System.arraycopy(bitMapBytes, 0, result, mtiBytes.length, bitMapBytes.length);
 
+        // Copiar campos ordenados al resultado
         int offset = mtiBytes.length + bitMapBytes.length;
         for (String campo : ordenCampos.values()) {
             byte[] campoBytes = campo.getBytes(java.nio.charset.StandardCharsets.US_ASCII);
@@ -91,6 +113,14 @@ public class MensajeIso8583 {
         }
 
         return result;
+    }
+
+    private List<Byte> stringToBytesASCII(String str) {
+        List<Byte> byteList = new ArrayList<>();
+        for (byte b : str.getBytes()) {
+            byteList.add(b);
+        }
+        return byteList;
     }
 
     public byte[] mensajeBytes(String bitMap) {
