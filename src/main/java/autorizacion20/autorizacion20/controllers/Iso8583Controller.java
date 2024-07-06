@@ -50,12 +50,15 @@ public class Iso8583Controller {
         String json = buildJson(mensajeIso, isoData);
         String jsonAEmisor = buildJsonAEmisor(mensajeIso);
         String jsonComprobarPan = buildJsonAEmisorVerificarPAN(mensajeIso);
-        
-      //  mensajeIso.setCampo(11, "000051");  
-      //  byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
 
-     //   manejarRespuesta(jsonComprobarPan,jsonAEmisor);
+        isoData.put(38, "484514");
 
+        // Actualizar el mapa de datos en mensajeIso
+        mensajeIso.setDatos(isoData);
+        //  mensajeIso.setCampo(11, "000051");  
+        //  byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
+
+        //   manejarRespuesta(jsonComprobarPan,jsonAEmisor);
         System.out.println("ISO message as JSON: " + json);
 
         // Log the JSON
@@ -67,7 +70,7 @@ public class Iso8583Controller {
         // Return a simple confirmation response (if needed)
         return ResponseEntity.ok(isoMessageBytes);
     }
-    
+
     private void manejarRespuesta(String jsonComprobarPan, String jsonAEmisor) {
         String urlEmisor1 = "https://accountservicese1-i101vvzy8-josue19-08s-projects.vercel.app/account/check-pan";
         String urlEmisor2 = "https://accountservicedos-n67mesvus-josue19-08s-projects.vercel.app/account/check-pan";
@@ -122,8 +125,8 @@ public class Iso8583Controller {
             // Manejar la excepción según sea necesario
         }
     }
-    
-     private void enviarJsonAutorizonEmisor2(String json) {
+
+    private void enviarJsonAutorizonEmisor2(String json) {
         String urlTercera = "https://accountservicese1-2srxjcdrq-josue19-08s-projects.vercel.app/account/debit";
 
         try {
@@ -258,9 +261,8 @@ public class Iso8583Controller {
         jsonBuilder.append("}");
         return jsonBuilder.toString();
     }
-    
-    
-        private String buildJsonAEmisorVerificarPAN(MensajeIso8583 mensajeIso) {
+
+    private String buildJsonAEmisorVerificarPAN(MensajeIso8583 mensajeIso) {
         StringBuilder jsonBuilder = new StringBuilder();
         jsonBuilder.append("{");
 
