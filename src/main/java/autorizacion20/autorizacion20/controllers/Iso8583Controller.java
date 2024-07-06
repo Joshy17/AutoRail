@@ -121,14 +121,17 @@ public class Iso8583Controller {
                 String jsonResponse = response.getBody();
                 logger.info("JSON recibido de la tercera URL: " + jsonResponse);
                 System.out.println("JSON recibido de la tercera URL: " + jsonResponse);
+                this.verificar = false;
                 // Aquí puedes procesar el JSON recibido según tus necesidades
             } else {
                 logger.error("Error al enviar JSON a la tercera URL: " + response.getStatusCode() + " - " + response.getBody());
                 // Manejar el error según sea necesario
+                this.verificar = true;
             }
         } catch (Exception e) {
             logger.error("Exception occurred while sending JSON to the third URL: ", e);
             // Manejar la excepción según sea necesario
+            this.verificar = true;
         }
     }
 
@@ -147,14 +150,19 @@ public class Iso8583Controller {
                 String jsonResponse = response.getBody();
                 logger.info("JSON recibido de la tercera URL: " + jsonResponse);
                 System.out.println("JSON recibido de la tercera URL: " + jsonResponse);
+                            this.verificar =false;
+
                 // Aquí puedes procesar el JSON recibido según tus necesidades
             } else {
                 logger.error("Error al enviar JSON a la tercera URL: " + response.getStatusCode() + " - " + response.getBody());
                 // Manejar el error según sea necesario
+                            this.verificar =true;
+
             }
         } catch (Exception e) {
             logger.error("Exception occurred while sending JSON to the third URL: ", e);
             // Manejar la excepción según sea necesario
+            this.verificar =true;
         }
     }
 
@@ -169,16 +177,16 @@ public class Iso8583Controller {
             
             if (response.getStatusCode() == HttpStatus.OK) {
                 logger.info("JSON enviado exitosamente: " + response.getBody());
-                this.verificar = false;
+
                 return true;
             } else {
                 logger.error("Error al enviar JSON: " + response.getStatusCode() + " - " + response.getBody());
-                this.verificar = true;
+
                 return false;
             }
         } catch (Exception e) {
             logger.error("Exception occurred while sending JSON to external URL: ", e);
-            this.verificar = true;
+
             return false;
         }
     }
@@ -191,20 +199,19 @@ public class Iso8583Controller {
             HttpEntity<String> entity = new HttpEntity<>(json, headers);
 
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-            this.verificar = true;
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 logger.info("JSON enviado exitosamente: " + response.getBody());
-                this.verificar = false;
+
                 return true;
             } else {
                 logger.error("Error al enviar JSON: " + response.getStatusCode() + " - " + response.getBody());
-                this.verificar = true;
+ 
                 return false;
             }
         } catch (Exception e) {
             logger.error("Exception occurred while sending JSON to external URL: ", e);
-            this.verificar = true;
+
             return false;
         }
     }
