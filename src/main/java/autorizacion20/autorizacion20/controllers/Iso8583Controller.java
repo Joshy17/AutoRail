@@ -38,7 +38,7 @@ public class Iso8583Controller {
     private String urlEmisor2 = "https://accountservicedos-n67mesvus-josue19-08s-projects.vercel.app"; // Cambia esta URL por la real
     private byte[] lastIsoMessage; // Variable para guardar el último mensaje ISO recibido
     private String BAD_REQUEST_CODE = "000051";
-    public boolean verificar = false;
+    public boolean verificar;
 
     @PostMapping("/api/iso8583/receive")
     public ResponseEntity<byte[]> receiveIsoMessage(@RequestBody byte[] isoMessageBytes) {
@@ -173,6 +173,7 @@ public class Iso8583Controller {
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 logger.info("JSON enviado exitosamente: " + response.getBody());
+                this.verificar = false;
                 return true;
             } else {
                 logger.error("Error al enviar JSON: " + response.getStatusCode() + " - " + response.getBody());
@@ -197,6 +198,7 @@ public class Iso8583Controller {
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 logger.info("JSON enviado exitosamente: " + response.getBody());
+                this.verificar = false;
                 return true;
             } else {
                 logger.error("Error al enviar JSON: " + response.getStatusCode() + " - " + response.getBody());
