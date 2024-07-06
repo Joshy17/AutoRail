@@ -54,7 +54,12 @@ public class Iso8583Controller {
         String jsonAEmisor = buildJsonAEmisor(mensajeIso);
         String jsonComprobarPan = buildJsonAEmisorVerificarPAN(mensajeIso);
 
-        mensajeIso.setMti("0210");
+        byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
+        logger.info("Datos del arreglo nuevo: ", modifiedIsoMessageBytes);
+
+        manejarRespuesta(jsonComprobarPan, jsonAEmisor);
+        
+                mensajeIso.setMti("0210");
         mensajeIso.getDatos().put(2, mensajeIso.datos.get(2)); // Número de tarjeta
         mensajeIso.getDatos().put(3, "000001"); // Código de procesamiento s
         mensajeIso.getDatos().put(4, mensajeIso.datos.get(4)); // Monto
@@ -72,11 +77,6 @@ public class Iso8583Controller {
             logger.info("Aca esta en false el verificar");
         }
         mensajeIso.getDatos().put(41, String.valueOf(mensajeIso.datos.get(41))); // ID de comercio (si es un número)
-
-        byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
-        logger.info("Datos del arreglo nuevo: ", modifiedIsoMessageBytes);
-
-        manejarRespuesta(jsonComprobarPan, jsonAEmisor);
         System.out.println("ISO message as JSON: " + json);
 
         // Log the JSON
