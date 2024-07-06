@@ -51,10 +51,8 @@ public class Iso8583Controller {
         String jsonAEmisor = buildJsonAEmisor(mensajeIso);
         String jsonComprobarPan = buildJsonAEmisorVerificarPAN(mensajeIso);
 
-        isoData.put(38, "484514");
-
+        mensajeIso.getDatos().put(38, "123445");    
         // Actualizar el mapa de datos en mensajeIso
-        mensajeIso.setDatos(isoData);
         
         byte[] envio = mensajeIso.mensajeBytes();
         //  mensajeIso.setCampo(11, "000051");  
