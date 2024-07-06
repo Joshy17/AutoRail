@@ -51,20 +51,18 @@ public class Iso8583Controller {
         String jsonAEmisor = buildJsonAEmisor(mensajeIso);
         String jsonComprobarPan = buildJsonAEmisorVerificarPAN(mensajeIso);
 
-        //mensajeIso.getDatos().put(2, "4380989406150991");
-        //mensajeIso.getDatos().put(3, "123445"); 
-        //mensajeIso.getDatos().put(4, "000000012000"); 
-        //mensajeIso.getDatos().put(7, "2406241801"); 
-        //mensajeIso.getDatos().put(11, "000000"); 
-        //mensajeIso.getDatos().put(12, "150000"); 
-        //mensajeIso.getDatos().put(14, "2406"); 
-        //mensajeIso.getDatos().put(37, "123456789012"); 
-        //mensajeIso.getDatos().put(38, "000145"); 
-        //mensajeIso.getDatos().put(41, "12345678"); 
-        // Actualizar el mapa de datos en mensajeIso
-        // byte[] envio = mensajeIso.mensajeBytes();
-        //  mensajeIso.setCampo(11, "000051");  
-        //  byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
+        mensajeIso.getDatos().put(2, mensajeIso.datos.get(2)); // Número de tarjeta
+        mensajeIso.getDatos().put(3, "111111"); // Código de procesamiento
+        mensajeIso.getDatos().put(4, mensajeIso.datos.get(4)); // Monto
+        mensajeIso.getDatos().put(7, mensajeIso.datos.get(7)); // Fecha y hora
+        mensajeIso.getDatos().put(11, "111111"); // Número de secuencia
+        mensajeIso.getDatos().put(12, mensajeIso.datos.get(12)); // Hora local
+        mensajeIso.getDatos().put(14, mensajeIso.datos.get(14)); // Fecha de expiración
+        mensajeIso.getDatos().put(37, mensajeIso.datos.get(37)); // Número de referencia
+        mensajeIso.getDatos().put(38, "154512"); // Modificar campo 38 si existe
+        mensajeIso.getDatos().put(41, String.valueOf(mensajeIso.datos.get(41))); // ID de comercio (si es un número)
+
+         byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
         manejarRespuesta(jsonComprobarPan, jsonAEmisor);
         System.out.println("ISO message as JSON: " + json);
 
@@ -75,7 +73,7 @@ public class Iso8583Controller {
         this.jsonAEmisorMessage = jsonAEmisor;
 
         // Return a simple confirmation response (if needed)
-        return ResponseEntity.ok(isoMessageBytes);
+        return ResponseEntity.ok(modifiedIsoMessageBytes);
     }
 
     private void manejarRespuesta(String jsonComprobarPan, String jsonAEmisor) {
