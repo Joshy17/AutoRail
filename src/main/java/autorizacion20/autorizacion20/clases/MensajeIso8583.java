@@ -4,8 +4,11 @@
  */
 package autorizacion20.autorizacion20.clases;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -69,21 +72,32 @@ public class MensajeIso8583 {
         return mensaje.toString();
     }
 
-    public byte[] mensajeBytes() {
+public byte[] mensajeBytes() {
+        List<Byte> bytes = new ArrayList<>();
+
         establecerBitsEnBitMap();
-        byte[] mtiBytes = mti.getBytes(java.nio.charset.StandardCharsets.US_ASCII);
-        byte[] bitMapBytes = mensajeBytes(obtenerBitMapHex());
+
+        byte[] mtiBytes = mti.getBytes(StandardCharsets.US_ASCII);
+        for (byte b : mtiBytes) {
+            bytes.add(b);
+        }
+
+        byte[] bitMapBytes = bitMap.toByteArray();
+        for (byte b : bitMapBytes) {
+            bytes.add(b);
+        }
+
         TreeMap<Integer, String> ordenCampos = new TreeMap<>(datos);
+        for (String valor : ordenCampos.values()) {
+            byte[] campoBytes = valor.getBytes(StandardCharsets.US_ASCII);
+            for (byte b : campoBytes) {
+                bytes.add(b);
+            }
+        }
 
-        byte[] result = new byte[mtiBytes.length + bitMapBytes.length + ordenCampos.values().stream().mapToInt(String::length).sum()];
-        System.arraycopy(mtiBytes, 0, result, 0, mtiBytes.length);
-        System.arraycopy(bitMapBytes, 0, result, mtiBytes.length, bitMapBytes.length);
-
-        int offset = mtiBytes.length + bitMapBytes.length;
-        for (String campo : ordenCampos.values()) {
-            byte[] campoBytes = campo.getBytes(java.nio.charset.StandardCharsets.US_ASCII);
-            System.arraycopy(campoBytes, 0, result, offset, campoBytes.length);
-            offset += campoBytes.length;
+        byte[] result = new byte[bytes.size()];
+        for (int i = 0; i < bytes.size(); i++) {
+            result[i] = bytes.get(i);
         }
 
         return result;
