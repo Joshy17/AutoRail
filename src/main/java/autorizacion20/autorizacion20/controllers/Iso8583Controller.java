@@ -172,6 +172,7 @@ public class Iso8583Controller {
                 return true;
             } else {
                 logger.error("Error al enviar JSON: " + response.getStatusCode() + " - " + response.getBody());
+                this.verificar = true;
                 return false;
             }
         } catch (Exception e) {
@@ -195,6 +196,7 @@ public class Iso8583Controller {
                 return true;
             } else {
                 logger.error("Error al enviar JSON: " + response.getStatusCode() + " - " + response.getBody());
+                this.verificar = true;
                 return false;
             }
         } catch (Exception e) {
