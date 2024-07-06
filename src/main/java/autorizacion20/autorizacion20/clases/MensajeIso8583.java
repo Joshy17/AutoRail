@@ -144,7 +144,7 @@ public byte[] mensajeBytes() {
         fieldLengths.put(7, 10);
         fieldLengths.put(11, 6);
         fieldLengths.put(12, 6);
-        fieldLengths.put(14, 4);
+        fieldLengths.put(14, 6);
         fieldLengths.put(37, 12);
         fieldLengths.put(38, 6);
         fieldLengths.put(41, 8);
