@@ -62,8 +62,10 @@ public class Iso8583Controller {
         mensajeIso.getDatos().put(37, mensajeIso.datos.get(37)); // Número de referencia
         mensajeIso.getDatos().put(38, "154512"); // Modificar campo 38 si existe
         mensajeIso.getDatos().put(41, String.valueOf(mensajeIso.datos.get(41))); // ID de comercio (si es un número)
-
-         byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
+ 
+        byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
+        logger.info("Datos del arreglo nuevo: ", modifiedIsoMessageBytes);
+        
         manejarRespuesta(jsonComprobarPan, jsonAEmisor);
         System.out.println("ISO message as JSON: " + json);
 
