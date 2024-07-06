@@ -7,7 +7,6 @@ package autorizacion20.autorizacion20.controllers;
 import autorizacion20.autorizacion20.clases.MensajeIso8583;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Arrays;
 import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,18 +52,22 @@ public class Iso8583Controller {
         String jsonAEmisor = buildJsonAEmisor(mensajeIso);
         String jsonComprobarPan = buildJsonAEmisorVerificarPAN(mensajeIso);
 
-        //   mensajeIso.setMti("0210");
-        //   mensajeIso.getDatos().put(2, mensajeIso.datos.get(2)); // Número de tarjeta
-        //   mensajeIso.getDatos().put(3, "111111"); // Código de procesamiento cambiar
-        //   mensajeIso.getDatos().put(4, mensajeIso.datos.get(4)); // Monto
-        //   mensajeIso.getDatos().put(7, mensajeIso.datos.get(7)); // Fecha y hora
-        //   mensajeIso.getDatos().put(11, "111111"); // Número de secuencia Cambiar
-        //   mensajeIso.getDatos().put(12, mensajeIso.datos.get(12)); // Hora local
-        //   mensajeIso.getDatos().put(14, mensajeIso.datos.get(14)); // Fecha de expiración
-        //    mensajeIso.getDatos().put(37, mensajeIso.datos.get(37)); // Número de referencia
-        //   mensajeIso.getDatos().put(38, "154512"); // Modificar campo 38 si existe Cambiar
-        //   mensajeIso.getDatos().put(41, String.valueOf(mensajeIso.datos.get(41))); // ID de comercio (si es un número)
-        manejarRespuesta(jsonComprobarPan, jsonAEmisor, mensajeIso);
+        mensajeIso.setMti("0210");
+        mensajeIso.getDatos().put(2, mensajeIso.datos.get(2)); // Número de tarjeta
+        mensajeIso.getDatos().put(3, "111111"); // Código de procesamiento s
+        mensajeIso.getDatos().put(4, mensajeIso.datos.get(4)); // Monto
+        mensajeIso.getDatos().put(7, mensajeIso.datos.get(7)); // Fecha y hora
+        mensajeIso.getDatos().put(11, "111111"); // Número de secuencia Cambiar
+        mensajeIso.getDatos().put(12, mensajeIso.datos.get(12)); // Hora local
+        mensajeIso.getDatos().put(14, mensajeIso.datos.get(14)); // Fecha de expiración
+        mensajeIso.getDatos().put(37, mensajeIso.datos.get(37)); // Número de referencia
+        mensajeIso.getDatos().put(38, "154512"); // Modificar campo 38 si existe
+        mensajeIso.getDatos().put(41, String.valueOf(mensajeIso.datos.get(41))); // ID de comercio (si es un número)
+ 
+        byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
+        logger.info("Datos del arreglo nuevo: ", modifiedIsoMessageBytes);
+        
+        manejarRespuesta(jsonComprobarPan, jsonAEmisor);
         System.out.println("ISO message as JSON: " + json);
 
         // Log the JSON
@@ -72,13 +75,12 @@ public class Iso8583Controller {
 
         this.lastJsonMessage = json;
         this.jsonAEmisorMessage = jsonAEmisor;
-        byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
 
         // Return a simple confirmation response (if needed)
         return ResponseEntity.ok(modifiedIsoMessageBytes);
     }
 
-    private void manejarRespuesta(String jsonComprobarPan, String jsonAEmisor, MensajeIso8583 mensajeIso) {
+    private void manejarRespuesta(String jsonComprobarPan, String jsonAEmisor) {
         String urlEmisor1 = "https://accountservicese1-i101vvzy8-josue19-08s-projects.vercel.app/account/check-pan";
         String urlEmisor2 = "https://accountservicedos-paznrzly9-josue19-08s-projects.vercel.app/account/check-pan";
 
@@ -95,6 +97,7 @@ public class Iso8583Controller {
             logger.info("La solicitud fue exitosa para el emisor 2");
             enviarJsonAutorizonEmisor2(jsonAEmisor); // Envía el JSON a una tercera URL
         }
+
     }
 
     private void enviarJsonAutorizonEmisor1(String json) {
@@ -159,14 +162,7 @@ public class Iso8583Controller {
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
             if (response.getStatusCode() == HttpStatus.OK) {
-                String jsonResponse = response.getBody();
-                logger.info("JSON recibido de la tercera URL: " + jsonResponse);
-                System.out.println("JSON recibido de la tercera URL: " + jsonResponse);
-
-                // Aquí se procesará el JSON recibido para extraer los valores necesarios
-                Map<Integer, String> responseData = new ObjectMapper().readValue(jsonResponse, new TypeReference<Map<Integer, String>>() {
-                });
-                actualizarMensajeIso(responseData, "0210");
+                logger.info("JSON enviado exitosamente: " + response.getBody());
                 return true;
             } else {
                 logger.error("Error al enviar JSON: " + response.getStatusCode() + " - " + response.getBody());
@@ -188,14 +184,7 @@ public class Iso8583Controller {
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
             if (response.getStatusCode() == HttpStatus.OK) {
-                String jsonResponse = response.getBody();
-                logger.info("JSON recibido de la tercera URL: " + jsonResponse);
-                System.out.println("JSON recibido de la tercera URL: " + jsonResponse);
-
-                // Aquí se procesará el JSON recibido para extraer los valores necesarios
-                Map<Integer, String> responseData = new ObjectMapper().readValue(jsonResponse, new TypeReference<Map<Integer, String>>() {
-                });
-                actualizarMensajeIso(responseData, "0210");
+                logger.info("JSON enviado exitosamente: " + response.getBody());
                 return true;
             } else {
                 logger.error("Error al enviar JSON: " + response.getStatusCode() + " - " + response.getBody());
@@ -205,26 +194,6 @@ public class Iso8583Controller {
             logger.error("Exception occurred while sending JSON to external URL: ", e);
             return false;
         }
-    }
-
-    private void actualizarMensajeIso(Map<Integer, String> responseData, String mti) {
-        MensajeIso8583 mensajeIso = new MensajeIso8583();
-        mensajeIso.setMti(mti);
-
-        mensajeIso.getDatos().put(2, responseData.get(2)); // Número de tarjeta
-        mensajeIso.getDatos().put(3, responseData.get(3)); // Código de procesamiento
-        mensajeIso.getDatos().put(4, responseData.get(4)); // Monto
-        mensajeIso.getDatos().put(7, responseData.get(7)); // Fecha y hora
-        mensajeIso.getDatos().put(11, responseData.get(11)); // Número de secuencia
-        mensajeIso.getDatos().put(12, responseData.get(12)); // Hora local
-        mensajeIso.getDatos().put(14, responseData.get(14)); // Fecha de expiración
-        mensajeIso.getDatos().put(37, responseData.get(37)); // Número de referencia
-        mensajeIso.getDatos().put(38, responseData.get(38)); // Modificar campo 38
-        mensajeIso.getDatos().put(41, responseData.get(41)); // ID de comercio
-
-        byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
-        logger.info("Datos del arreglo nuevo: {}", Arrays.toString(modifiedIsoMessageBytes));
-        // Aquí puedes retornar o usar los bytes modificados según sea necesario
     }
 
     @GetMapping("/api/iso8583/lastJson")
