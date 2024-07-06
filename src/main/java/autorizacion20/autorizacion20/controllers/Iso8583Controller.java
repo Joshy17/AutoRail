@@ -62,10 +62,10 @@ public class Iso8583Controller {
         
         mensajeIso.setMti("0210");
         mensajeIso.getDatos().put(2, mensajeIso.datos.get(2)); // Número de tarjeta
-        mensajeIso.getDatos().put(3, "000001"); // Código de procesamiento s
+        mensajeIso.getDatos().put(3, "999999"); // Código de procesamiento s
         mensajeIso.getDatos().put(4, mensajeIso.datos.get(4)); // Monto
         mensajeIso.getDatos().put(7, mensajeIso.datos.get(7)); // Fecha y hora
-        mensajeIso.getDatos().put(11, "000001"); // Número de secuencia Cambiar
+        mensajeIso.getDatos().put(11, "999999"); // Número de secuencia Cambiar
         mensajeIso.getDatos().put(12, mensajeIso.datos.get(12)); // Hora local
         mensajeIso.getDatos().put(14, mensajeIso.datos.get(14)); // Fecha de expiración
         mensajeIso.getDatos().put(37, mensajeIso.datos.get(37)); // Número de referencia
