@@ -51,6 +51,7 @@ public class Iso8583Controller {
         String jsonAEmisor = buildJsonAEmisor(mensajeIso);
         String jsonComprobarPan = buildJsonAEmisorVerificarPAN(mensajeIso);
 
+        mensajeIso.setMti("0210");
         mensajeIso.getDatos().put(2, mensajeIso.datos.get(2)); // Número de tarjeta
         mensajeIso.getDatos().put(3, "111111"); // Código de procesamiento
         mensajeIso.getDatos().put(4, mensajeIso.datos.get(4)); // Monto
