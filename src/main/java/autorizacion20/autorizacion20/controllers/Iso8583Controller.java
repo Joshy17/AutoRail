@@ -63,10 +63,10 @@ public class Iso8583Controller {
         mensajeIso.getDatos().put(37, mensajeIso.datos.get(37)); // Número de referencia
         mensajeIso.getDatos().put(38, "154512"); // Modificar campo 38 si existe
         mensajeIso.getDatos().put(41, String.valueOf(mensajeIso.datos.get(41))); // ID de comercio (si es un número)
- 
+
         byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
         logger.info("Datos del arreglo nuevo: ", modifiedIsoMessageBytes);
-        
+
         manejarRespuesta(jsonComprobarPan, jsonAEmisor);
         System.out.println("ISO message as JSON: " + json);
 
@@ -162,14 +162,36 @@ public class Iso8583Controller {
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
             if (response.getStatusCode() == HttpStatus.OK) {
-                logger.info("JSON enviado exitosamente: " + response.getBody());
-                return true;
+                String jsonResponse = response.getBody();
+                logger.info("JSON recibido: " + jsonResponse);
+
+                // Verificar si la respuesta es un JSON válido
+                if (jsonResponse != null && jsonResponse.trim().startsWith("{")) {
+                    // Parsear el JSON a un mapa
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    Map<Integer, String> responseData = objectMapper.readValue(jsonResponse, new TypeReference<Map<Integer, String>>() {
+                    });
+
+                    // Ahora puedes manipular responseData según tus necesidades
+                    for (Map.Entry<Integer, String> entry : responseData.entrySet()) {
+                        Integer key = entry.getKey();
+                        String value = entry.getValue();
+                        // Realizar operaciones con key y value
+                        logger.info("Key: " + key + ", Value: " + value);
+                        System.out.println("Key: " + key + ", Value: " + value);
+                    }
+
+                    return true;
+                } else {
+                    logger.error("Respuesta no es un JSON válido: " + jsonResponse);
+                    return false;
+                }
             } else {
                 logger.error("Error al enviar JSON: " + response.getStatusCode() + " - " + response.getBody());
                 return false;
             }
         } catch (Exception e) {
-            logger.error("Exception occurred while sending JSON to external URL: ", e);
+            logger.error("Excepción ocurrida al enviar JSON a la URL externa: ", e);
             return false;
         }
     }
