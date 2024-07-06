@@ -44,41 +44,36 @@ public class Iso8583Controller {
 
         // Parse and process the ISO message
         MensajeIso8583 mensajeIso = MensajeIso8583.parse(isoMessageBytes);
-        Map<Integer, String> isoData = mensajeIso.getDatos();
 
-        // Convert ISO data to JSON manually
-        String json = buildJson(mensajeIso, isoData);
-        String jsonAEmisor = buildJsonAEmisor(mensajeIso);
-        String jsonComprobarPan = buildJsonAEmisorVerificarPAN(mensajeIso);
+        // Modificar el campo 38 si existe en los datos
+        if (mensajeIso.datos.containsKey(38)) {
+            mensajeIso.datos.put(38, "123445"); // Modificar campo 38 si existe
+        } else {
+            logger.warn("Campo 38 no encontrado en el mensaje ISO.");
+        }
 
-        
-        //mensajeIso.getDatos().put(2, "4380989406150991");
-        //mensajeIso.getDatos().put(3, "123445"); 
-        //mensajeIso.getDatos().put(4, "000000012000"); 
-        //mensajeIso.getDatos().put(7, "2406241801"); 
-        //mensajeIso.getDatos().put(11, "000000"); 
-        //mensajeIso.getDatos().put(12, "150000"); 
-        //mensajeIso.getDatos().put(14, "2406"); 
-        //mensajeIso.getDatos().put(37, "123456789012"); 
-        //mensajeIso.getDatos().put(38, "000145"); 
-        //mensajeIso.getDatos().put(41, "12345678"); 
-        // Actualizar el mapa de datos en mensajeIso
-        
-       // byte[] envio = mensajeIso.mensajeBytes();
-        //  mensajeIso.setCampo(11, "000051");  
-        //  byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
+        // Asignar los valores existentes a los campos específicos
+        mensajeIso.datos.put(2, mensajeIso.datos.get(2)); // Número de tarjeta
+        mensajeIso.datos.put(3, "000000"); // Código de procesamiento
+        mensajeIso.datos.put(4, mensajeIso.datos.get(4)); // Monto
+        mensajeIso.datos.put(7, mensajeIso.datos.get(7)); // Fecha y hora
+        mensajeIso.datos.put(11, "000000"); // Número de secuencia
+        mensajeIso.datos.put(12, mensajeIso.datos.get(12)); // Hora local
+        mensajeIso.datos.put(14, mensajeIso.datos.get(14)); // Fecha de expiración
+        mensajeIso.datos.put(37, mensajeIso.datos.get(37)); // Número de referencia
+        mensajeIso.datos.put(41, String.valueOf(mensajeIso.datos.get(41))); // ID de comercio (si es un número)
 
-        manejarRespuesta(jsonComprobarPan,jsonAEmisor);
-        System.out.println("ISO message as JSON: " + json);
+        // Convertir los datos ISO a JSON (si es necesario)
+     //   String json = buildJson(mensajeIso);
 
-        // Log the JSON
-        logger.info("ISO message as JSON: {}", json);
+        // Log y almacenar el JSON
+     //   logger.info("ISO message as JSON: {}", json);
+      //  this.lastJsonMessage = json;
 
-        this.lastJsonMessage = json;
-        this.jsonAEmisorMessage = jsonAEmisor;
-
-        // Return a simple confirmation response (if needed)
-        return ResponseEntity.ok(isoMessageBytes);
+        // Devolver una respuesta de confirmación simple (si es necesario)
+        // Aquí se puede devolver el mensaje ISO como bytes
+        byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
+        return ResponseEntity.ok(modifiedIsoMessageBytes);
     }
 
     private void manejarRespuesta(String jsonComprobarPan, String jsonAEmisor) {
