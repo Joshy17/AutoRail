@@ -37,6 +37,8 @@ public class Iso8583Controller {
     private String urlEmisor1 = "https://accountservicese1-2srxjcdrq-josue19-08s-projects.vercel.app"; // Cambia esta URL por la real
     private String urlEmisor2 = "https://accountservicedos-n67mesvus-josue19-08s-projects.vercel.app"; // Cambia esta URL por la real
     private byte[] lastIsoMessage; // Variable para guardar el último mensaje ISO recibido
+    private String BAD_REQUEST_CODE = "000051";
+    private Boolean verificar = false;
 
     @PostMapping("/api/iso8583/receive")
     public ResponseEntity<byte[]> receiveIsoMessage(@RequestBody byte[] isoMessageBytes) {
@@ -61,7 +63,11 @@ public class Iso8583Controller {
         mensajeIso.getDatos().put(12, mensajeIso.datos.get(12)); // Hora local
         mensajeIso.getDatos().put(14, mensajeIso.datos.get(14)); // Fecha de expiración
         mensajeIso.getDatos().put(37, mensajeIso.datos.get(37)); // Número de referencia
-        mensajeIso.getDatos().put(38, "154512"); // Modificar campo 38 si existe
+        if(this.verificar == true){
+           mensajeIso.getDatos().put(38, "000051"); // Modificar campo 38 si existe
+        }else{
+            mensajeIso.getDatos().put(38, "154211");
+        }
         mensajeIso.getDatos().put(41, String.valueOf(mensajeIso.datos.get(41))); // ID de comercio (si es un número)
 
         byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
@@ -170,6 +176,7 @@ public class Iso8583Controller {
             }
         } catch (Exception e) {
             logger.error("Exception occurred while sending JSON to external URL: ", e);
+            this.verificar = true;
             return false;
         }
     }
@@ -192,6 +199,7 @@ public class Iso8583Controller {
             }
         } catch (Exception e) {
             logger.error("Exception occurred while sending JSON to external URL: ", e);
+            this.verificar = true;
             return false;
         }
     }
@@ -312,5 +320,10 @@ public class Iso8583Controller {
 
     public byte[] getLastIsoMessage() {
         return lastIsoMessage;
+    }
+    
+    private void returnBadRequest() {
+
+        logger.error("Bad Request - Código: " + BAD_REQUEST_CODE);
     }
 }
