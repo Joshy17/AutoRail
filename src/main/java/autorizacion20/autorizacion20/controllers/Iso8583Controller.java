@@ -46,11 +46,8 @@ public class Iso8583Controller {
         MensajeIso8583 mensajeIso = MensajeIso8583.parse(isoMessageBytes);
 
         // Modificar el campo 38 si existe en los datos
-        if (mensajeIso.datos.containsKey(38)) {
-            mensajeIso.datos.put(38, "123445"); // Modificar campo 38 si existe
-        } else {
-            logger.warn("Campo 38 no encontrado en el mensaje ISO.");
-        }
+        mensajeIso.datos.put(38, "123445"); // Modificar campo 38 si existe
+
 
         // Asignar los valores existentes a los campos específicos
         mensajeIso.datos.put(2, mensajeIso.datos.get(2)); // Número de tarjeta
