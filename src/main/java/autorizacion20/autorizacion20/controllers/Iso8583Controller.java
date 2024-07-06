@@ -55,6 +55,8 @@ public class Iso8583Controller {
 
         // Actualizar el mapa de datos en mensajeIso
         mensajeIso.setDatos(isoData);
+        
+        byte[] envio = mensajeIso.mensajeBytes();
         //  mensajeIso.setCampo(11, "000051");  
         //  byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
 
@@ -68,7 +70,7 @@ public class Iso8583Controller {
         this.jsonAEmisorMessage = jsonAEmisor;
 
         // Return a simple confirmation response (if needed)
-        return ResponseEntity.ok(isoMessageBytes);
+        return ResponseEntity.ok(envio);
     }
 
     private void manejarRespuesta(String jsonComprobarPan, String jsonAEmisor) {
