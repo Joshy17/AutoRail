@@ -51,8 +51,8 @@ public class Iso8583Controller {
         String jsonAEmisor = buildJsonAEmisor(mensajeIso);
         String jsonComprobarPan = buildJsonAEmisorVerificarPAN(mensajeIso);
         
-        mensajeIso.setCampo(11, "000051");  
-        byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
+      //  mensajeIso.setCampo(11, "000051");  
+      //  byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
 
      //   manejarRespuesta(jsonComprobarPan,jsonAEmisor);
 
@@ -191,59 +191,6 @@ public class Iso8583Controller {
             logger.error("Exception occurred while sending JSON to external URL: ", e);
             return false;
         }
-    }
-
-    // Método para reconstruir el mensaje ISO con los datos actualizados
-    private byte[] reconstructIsoMessageEmisor(MensajeIso8583 mensajeIso, Map<Integer, String> isoData) {
-        // Obtener los bytes del mensaje ISO original
-        byte[] originalIsoBytes = mensajeIso.mensajeBytes();
-
-        // Reconstruir el mensaje ISO con los datos actualizados
-        for (Map.Entry<Integer, String> entry : isoData.entrySet()) {
-            Integer fieldNumber = entry.getKey();
-            String fieldValue = entry.getValue();
-
-            // Verificar y ajustar la longitud del campo según fieldLengths si es necesario
-            if (fieldValue != null && fieldValue.length() > 0) {
-                int expectedLength = fieldLengths.getOrDefault(fieldNumber, fieldValue.length());
-                if (fieldValue.length() < expectedLength) {
-                    // Rellenar con espacios si es menor que la longitud esperada
-                    fieldValue = String.format("%-" + expectedLength + "s", fieldValue);
-                } else if (fieldValue.length() > expectedLength) {
-                    // Truncar si es mayor que la longitud esperada
-                    fieldValue = fieldValue.substring(0, expectedLength);
-                }
-                isoData.put(fieldNumber, fieldValue);
-            }
-        }
-
-        // Reconstruir los bytes del mensaje ISO con los datos actualizados
-        return mensajeIso.mensajeBytes();
-    }
-
-    // Método para convertir byte[] a representación hexadecimal de cadena
-    private String bytesToHex(byte[] bytes) {
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : bytes) {
-            hexString.append(String.format("%02X", b));
-        }
-        return hexString.toString();
-    }
-
-    // Longitudes esperadas de los campos ISO
-    private static final Map<Integer, Integer> fieldLengths = new HashMap<>();
-
-    static {
-        fieldLengths.put(2, 16);
-        fieldLengths.put(3, 6);
-        fieldLengths.put(4, 12);
-        fieldLengths.put(7, 10);
-        fieldLengths.put(11, 6);
-        fieldLengths.put(12, 6);
-        fieldLengths.put(14, 4);
-        fieldLengths.put(37, 12);
-        fieldLengths.put(38, 6);
-        fieldLengths.put(41, 8);
     }
 
     @GetMapping("/api/iso8583/lastJson")
