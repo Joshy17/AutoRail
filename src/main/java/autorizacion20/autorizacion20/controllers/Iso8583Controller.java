@@ -51,7 +51,6 @@ public class Iso8583Controller {
         String jsonAEmisor = buildJsonAEmisor(mensajeIso);
         String jsonComprobarPan = buildJsonAEmisorVerificarPAN(mensajeIso);
 
-        
         //mensajeIso.getDatos().put(2, "4380989406150991");
         //mensajeIso.getDatos().put(3, "123445"); 
         //mensajeIso.getDatos().put(4, "000000012000"); 
@@ -63,12 +62,10 @@ public class Iso8583Controller {
         //mensajeIso.getDatos().put(38, "000145"); 
         //mensajeIso.getDatos().put(41, "12345678"); 
         // Actualizar el mapa de datos en mensajeIso
-        
-       // byte[] envio = mensajeIso.mensajeBytes();
+        // byte[] envio = mensajeIso.mensajeBytes();
         //  mensajeIso.setCampo(11, "000051");  
         //  byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
-
-        manejarRespuesta(jsonComprobarPan,jsonAEmisor);
+        manejarRespuesta(jsonComprobarPan, jsonAEmisor);
         System.out.println("ISO message as JSON: " + json);
 
         // Log the JSON
@@ -98,7 +95,7 @@ public class Iso8583Controller {
             logger.info("La solicitud fue exitosa para el emisor 2");
             enviarJsonAutorizonEmisor2(jsonAEmisor); // Envía el JSON a una tercera URL
         }
-        
+
     }
 
     private void enviarJsonAutorizonEmisor1(String json) {
@@ -228,7 +225,7 @@ public class Iso8583Controller {
         if (mensajeIso.getDatos().containsKey(2)) {
             jsonBuilder.append("\"campo2\":\"").append(mensajeIso.getDatos().get(2)).append("\",");
         }
-        
+
         // Campo 4
         if (mensajeIso.getDatos().containsKey(4)) {
             jsonBuilder.append("\"campo4\":\"").append(mensajeIso.getDatos().get(4)).append("\",");
@@ -238,12 +235,15 @@ public class Iso8583Controller {
         if (mensajeIso.getDatos().containsKey(11)) {
             jsonBuilder.append("\"campo11\":\"").append(mensajeIso.getDatos().get(11)).append("\",");
         }
-        
+
         // Campo 38
         if (mensajeIso.getDatos().containsKey(38)) {
-            jsonBuilder.append("\"campo38\":\"").append(mensajeIso.getDatos().get(38)).append("\",");
+            String campo38Value = mensajeIso.getDatos().get(38);
+            // Eliminar ceros a la izquierda
+            String campo38Cleaned = campo38Value.replaceFirst("^0+(?!$)", "");
+            jsonBuilder.append("\"campo38\":\"").append(campo38Cleaned).append("\",");
         }
-        
+
         // Campo 37
         if (mensajeIso.getDatos().containsKey(37)) {
             jsonBuilder.append("\"campo37\":\"").append(mensajeIso.getDatos().get(37)).append("\",");
