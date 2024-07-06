@@ -59,7 +59,7 @@ public class Iso8583Controller {
 
         manejarRespuesta(jsonComprobarPan, jsonAEmisor);
         
-                mensajeIso.setMti("0210");
+        mensajeIso.setMti("0210");
         mensajeIso.getDatos().put(2, mensajeIso.datos.get(2)); // Número de tarjeta
         mensajeIso.getDatos().put(3, "000001"); // Código de procesamiento s
         mensajeIso.getDatos().put(4, mensajeIso.datos.get(4)); // Monto
@@ -69,7 +69,8 @@ public class Iso8583Controller {
         mensajeIso.getDatos().put(14, mensajeIso.datos.get(14)); // Fecha de expiración
         mensajeIso.getDatos().put(37, mensajeIso.datos.get(37)); // Número de referencia
         logger.info("Aca esta el verificar");
-        if(this.verificar == true){
+        
+        if(this.verificar){
            mensajeIso.getDatos().put(38, "000051"); // Modificar campo 38 si existe
           logger.info("Aca esta si entro al true");
         }else{
