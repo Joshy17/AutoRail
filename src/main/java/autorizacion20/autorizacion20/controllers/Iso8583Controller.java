@@ -55,9 +55,6 @@ public class Iso8583Controller {
         String jsonAEmisor = buildJsonAEmisor(mensajeIso);
         String jsonComprobarPan = buildJsonAEmisorVerificarPAN(mensajeIso);
 
-        byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
-        logger.info("Datos del arreglo nuevo: ", modifiedIsoMessageBytes);
-
         manejarRespuesta(jsonComprobarPan, jsonAEmisor);
         
         mensajeIso.setMti("0210");
@@ -73,6 +70,8 @@ public class Iso8583Controller {
         mensajeIso.getDatos().put(41, String.valueOf(mensajeIso.datos.get(41))); // ID de comercio (si es un número)
         System.out.println("ISO message as JSON: " + json);
 
+                byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
+        logger.info("Datos del arreglo nuevo: ", modifiedIsoMessageBytes);
         // Log the JSON
         logger.info("ISO message as JSON: {}", json);
 
