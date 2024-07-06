@@ -44,6 +44,7 @@ public class Iso8583Controller {
 
         // Parse and process the ISO message
         MensajeIso8583 mensajeIso = MensajeIso8583.parse(isoMessageBytes);
+        logger.info("Mensaje Iso Nelson: {}", mensajeIso);
         Map<Integer, String> isoData = mensajeIso.getDatos();
 
         // Convert ISO data to JSON manually
