@@ -93,21 +93,12 @@ public class Iso8583Controller {
             // Acción si la solicitud fue exitosa para el emisor 1
             logger.info("La solicitud fue exitosa para el emisor 1");
             enviarJsonAutorizonEmisor1(jsonAEmisor); // Envía el JSON a una tercera URL
-        } else {
-            // Acción si la solicitud falló para el emisor 1
-            logger.error("La solicitud falló para el emisor 1");
-            // Otras acciones...
-        }
-
-        if (exitoEmisor2) {
+        } else if (exitoEmisor2) {
             // Acción si la solicitud fue exitosa para el emisor 2
             logger.info("La solicitud fue exitosa para el emisor 2");
             enviarJsonAutorizonEmisor2(jsonAEmisor); // Envía el JSON a una tercera URL
-        } else {
-            // Acción si la solicitud falló para el emisor 2
-            logger.error("La solicitud falló para el emisor 2");
-            // Otras acciones...
         }
+        
     }
 
     private void enviarJsonAutorizonEmisor1(String json) {
@@ -233,29 +224,29 @@ public class Iso8583Controller {
         StringBuilder jsonBuilder = new StringBuilder();
         jsonBuilder.append("{");
 
-        // Campo 4
-        if (mensajeIso.getDatos().containsKey(4)) {
-            jsonBuilder.append("\"campo4\":\"").append(mensajeIso.getDatos().get(4)).append("\",");
-        }
-
         // Campo 2
         if (mensajeIso.getDatos().containsKey(2)) {
             jsonBuilder.append("\"campo2\":\"").append(mensajeIso.getDatos().get(2)).append("\",");
+        }
+        
+        // Campo 4
+        if (mensajeIso.getDatos().containsKey(4)) {
+            jsonBuilder.append("\"campo4\":\"").append(mensajeIso.getDatos().get(4)).append("\",");
         }
 
         // Campo 11
         if (mensajeIso.getDatos().containsKey(11)) {
             jsonBuilder.append("\"campo11\":\"").append(mensajeIso.getDatos().get(11)).append("\",");
         }
-
-        // Campo 37
-        if (mensajeIso.getDatos().containsKey(37)) {
-            jsonBuilder.append("\"campo37\":\"").append(mensajeIso.getDatos().get(37)).append("\",");
-        }
-
+        
         // Campo 38
         if (mensajeIso.getDatos().containsKey(38)) {
             jsonBuilder.append("\"campo38\":\"").append(mensajeIso.getDatos().get(38)).append("\",");
+        }
+        
+        // Campo 37
+        if (mensajeIso.getDatos().containsKey(37)) {
+            jsonBuilder.append("\"campo37\":\"").append(mensajeIso.getDatos().get(37)).append("\",");
         }
 
         // Campo 41
