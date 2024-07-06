@@ -38,7 +38,7 @@ public class Iso8583Controller {
     private String urlEmisor2 = "https://accountservicedos-n67mesvus-josue19-08s-projects.vercel.app"; // Cambia esta URL por la real
     private byte[] lastIsoMessage; // Variable para guardar el último mensaje ISO recibido
     private String BAD_REQUEST_CODE = "000051";
-    private Boolean verificar = false;
+    private boolean verificar = false;
 
     @PostMapping("/api/iso8583/receive")
     public ResponseEntity<byte[]> receiveIsoMessage(@RequestBody byte[] isoMessageBytes) {
