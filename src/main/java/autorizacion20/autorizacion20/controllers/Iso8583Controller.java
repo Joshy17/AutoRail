@@ -170,6 +170,7 @@ public class Iso8583Controller {
             HttpEntity<String> entity = new HttpEntity<>(json, headers);
 
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+            this.verificar = true;
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 logger.info("JSON enviado exitosamente: " + response.getBody());
@@ -195,6 +196,7 @@ public class Iso8583Controller {
             HttpEntity<String> entity = new HttpEntity<>(json, headers);
 
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+            this.verificar = true;
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 logger.info("JSON enviado exitosamente: " + response.getBody());
