@@ -14,9 +14,9 @@ import java.util.TreeMap;
  * @author XPC
  */
 public class MensajeIso8583 {
-    private String mti;
-    private BitSet bitMap = new BitSet(64);
-    private Map<Integer, String> datos = new HashMap<>();
+    public String mti;
+    public BitSet bitMap = new BitSet(64);
+    public Map<Integer, String> datos = new HashMap<>();
 
     public String getMti() {
         return mti;
