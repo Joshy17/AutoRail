@@ -51,7 +51,17 @@ public class Iso8583Controller {
         String jsonAEmisor = buildJsonAEmisor(mensajeIso);
         String jsonComprobarPan = buildJsonAEmisorVerificarPAN(mensajeIso);
 
-        mensajeIso.getDatos().put(38, "123445");    
+        
+        mensajeIso.getDatos().put(2, "4380989406150991");
+        mensajeIso.getDatos().put(3, "123445"); 
+        mensajeIso.getDatos().put(4, "000000012000"); 
+        mensajeIso.getDatos().put(7, "2406241801"); 
+        mensajeIso.getDatos().put(11, "000000"); 
+        mensajeIso.getDatos().put(12, "150000"); 
+        mensajeIso.getDatos().put(14, "2406"); 
+        mensajeIso.getDatos().put(37, "123456789012"); 
+        mensajeIso.getDatos().put(38, "000145"); 
+        mensajeIso.getDatos().put(41, "12345678"); 
         // Actualizar el mapa de datos en mensajeIso
         
         byte[] envio = mensajeIso.mensajeBytes();
