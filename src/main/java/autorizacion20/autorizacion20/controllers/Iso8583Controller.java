@@ -38,7 +38,7 @@ public class Iso8583Controller {
     private String urlEmisor2 = "https://accountservicedos-n67mesvus-josue19-08s-projects.vercel.app"; // Cambia esta URL por la real
     private byte[] lastIsoMessage; // Variable para guardar el último mensaje ISO recibido
     private String BAD_REQUEST_CODE = "000051";
-    private boolean verificar = false;
+    public boolean verificar = false;
 
     @PostMapping("/api/iso8583/receive")
     public ResponseEntity<byte[]> receiveIsoMessage(@RequestBody byte[] isoMessageBytes) {
@@ -63,10 +63,13 @@ public class Iso8583Controller {
         mensajeIso.getDatos().put(12, mensajeIso.datos.get(12)); // Hora local
         mensajeIso.getDatos().put(14, mensajeIso.datos.get(14)); // Fecha de expiración
         mensajeIso.getDatos().put(37, mensajeIso.datos.get(37)); // Número de referencia
+        logger.info("Aca esta el verificar");
         if(this.verificar == true){
            mensajeIso.getDatos().put(38, "000051"); // Modificar campo 38 si existe
+          logger.info("Aca esta si entro al true");
         }else{
             mensajeIso.getDatos().put(38, "154211");
+            logger.info("Aca esta en false el verificar");
         }
         mensajeIso.getDatos().put(41, String.valueOf(mensajeIso.datos.get(41))); // ID de comercio (si es un número)
 
