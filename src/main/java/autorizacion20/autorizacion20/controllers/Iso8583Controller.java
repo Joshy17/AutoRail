@@ -64,7 +64,7 @@ public class Iso8583Controller {
         //mensajeIso.getDatos().put(41, "12345678"); 
         // Actualizar el mapa de datos en mensajeIso
         
-        byte[] envio = mensajeIso.mensajeBytes();
+       // byte[] envio = mensajeIso.mensajeBytes();
         //  mensajeIso.setCampo(11, "000051");  
         //  byte[] modifiedIsoMessageBytes = mensajeIso.mensajeBytes();
 
