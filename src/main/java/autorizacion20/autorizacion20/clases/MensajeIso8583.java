@@ -25,6 +25,10 @@ public class MensajeIso8583 {
     public void setMti(String mti) {
         this.mti = mti;
     }
+    
+    public void setCampo(int numeroCampo, String valor) {
+        datos.put(numeroCampo, valor);
+    }
 
     public BitSet getBitMap() {
         return bitMap;
