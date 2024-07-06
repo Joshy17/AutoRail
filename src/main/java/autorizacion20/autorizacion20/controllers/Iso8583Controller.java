@@ -228,7 +228,10 @@ public class Iso8583Controller {
 
         // Campo 4
         if (mensajeIso.getDatos().containsKey(4)) {
-            jsonBuilder.append("\"campo4\":\"").append(mensajeIso.getDatos().get(4)).append("\",");
+            String campo4Value = mensajeIso.getDatos().get(4);
+            // Eliminar ceros a la izquierda y formatear como número con punto decimal
+            String campo4Cleaned = campo4Value.replaceFirst("^0+", "").replace(",", ".");
+            jsonBuilder.append("\"campo4\":\"").append(campo4Cleaned).append("\",");
         }
 
         // Campo 11
@@ -238,10 +241,7 @@ public class Iso8583Controller {
 
         // Campo 38
         if (mensajeIso.getDatos().containsKey(38)) {
-            String campo38Value = mensajeIso.getDatos().get(38);
-            // Eliminar ceros a la izquierda
-            String campo38Cleaned = campo38Value.replaceFirst("^0+(?!$)", "");
-            jsonBuilder.append("\"campo38\":\"").append(campo38Cleaned).append("\",");
+            jsonBuilder.append("\"campo38\":\"").append(mensajeIso.getDatos().get(38)).append("\",");
         }
 
         // Campo 37
