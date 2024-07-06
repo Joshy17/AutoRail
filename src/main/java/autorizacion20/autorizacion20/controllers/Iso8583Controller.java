@@ -38,11 +38,12 @@ public class Iso8583Controller {
     private String urlEmisor2 = "https://accountservicedos-n67mesvus-josue19-08s-projects.vercel.app"; // Cambia esta URL por la real
     private byte[] lastIsoMessage; // Variable para guardar el último mensaje ISO recibido
     private String BAD_REQUEST_CODE = "000051";
-    public boolean verificar;
+    public boolean verificar ;
 
     @PostMapping("/api/iso8583/receive")
     public ResponseEntity<byte[]> receiveIsoMessage(@RequestBody byte[] isoMessageBytes) {
         logger.info("Received ISO message bytes: {}", new String(isoMessageBytes));
+        this.verificar = true;
 
         // Parse and process the ISO message
         MensajeIso8583 mensajeIso = MensajeIso8583.parse(isoMessageBytes);
@@ -170,8 +171,7 @@ public class Iso8583Controller {
             HttpEntity<String> entity = new HttpEntity<>(json, headers);
 
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-            this.verificar = true;
-
+            
             if (response.getStatusCode() == HttpStatus.OK) {
                 logger.info("JSON enviado exitosamente: " + response.getBody());
                 this.verificar = false;
